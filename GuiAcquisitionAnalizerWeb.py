@@ -10,6 +10,48 @@ import matplotlib.pyplot as plt
 # --- CONFIGURAZIONE PAGINA ---
 st.set_page_config(page_title="Gui Analizer 001", layout="wide")
 
+# ==========================================
+# === MODIFICA: SISTEMA DI AUTENTICAZIONE ===
+# ==========================================
+
+# Inizializza lo stato dell'autenticazione se non esiste
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+
+# Funzione di verifica password
+def check_password():
+    # Recupera la password inserita (senza ricaricare tutta la pagina grazie ai callback)
+    if st.session_state["password_input"] == "giamps_1775":
+        st.session_state.authenticated = True
+    else:
+        st.session_state.authenticated = False
+
+# Se l'utente non è autenticato, mostra SOLO la schermata di login
+if not st.session_state.authenticated:
+    # Creiamo un contenitore centrale per il login
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("<br><br><h1 style='text-align: center;'>🔐 Access Control</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center;'>Please enter the password to access the GUI Analizer.</p>", unsafe_allow_html=True)
+        
+        # Input password con callback
+        st.text_input("Password", type="password", key="password_input", on_change=check_password)
+        
+        # Gestione errore (controlliamo se l'input non è vuoto e la password è errata)
+        if "password_input" in st.session_state and st.session_state["password_input"]:
+            if not st.session_state.authenticated:
+                st.error("password uncorrect")
+
+    # BLOCCO DI SICUREZZA:
+    # st.stop() ferma l'esecuzione dello script qui.
+    # Nessun codice sottostante (la logica di analisi) verrà eseguito o inviato al browser.
+    st.stop()
+
+# ==========================================
+# === FINE MODIFICA: INIZIO SCRIPT ORIGINALE ===
+# ==========================================
+
 # --- CLASSE DI ANALISI LOGICA (Adattata per Web) ---
 class OmniLogAnalyzerWeb:
     def __init__(self):
